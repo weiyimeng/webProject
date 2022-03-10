@@ -1,0 +1,26 @@
+.site-head {
+    height: 150px;
+    background-color: aqua;
+}
+
+.site-head .topbar {
+    line-height: 32px;
+    height: 32px;
+    background-color: beige;
+}
+
+.site-head .topbar .center .short-links {
+    margin-left: 100px;
+    float: left;
+}
+
+.site-head .topbar .center .short-links>ul>li {
+    background-color: blueviolet;
+    float: left;
+    margin-right: 18px;
+    font-size: 14px;
+}
+
+.site-head .topbar .center .short-links>ul>li.have-menu {
+    padding-right: 10px;
+}
