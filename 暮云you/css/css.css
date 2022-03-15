@@ -335,3 +335,76 @@
     /* border: 1px solid rebeccapurple; */
     box-shadow: 0px 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
+
+.jjzyx {
+    height: 738px;
+}
+
+.jjzyx .center .hd h1 {
+    float: left;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.jjzyx .center .hd em {
+    float: left;
+    position: relative;
+    top: 20px;
+    left: 10px;
+}
+
+.jjzyx .center .hd ul {
+    float: right;
+}
+
+.jjzyx .center .hd ul {
+    padding-top: 20px;
+}
+
+.jjzyx .center .hd ul li {
+    float: left;
+    margin-right: 10px;
+}
+
+.jjzyx .center .hd ul li.current {
+    color: forestgreen;
+    border-bottom: 2px solid green;
+    padding-bottom: 4px;
+}
+
+.jjzyx .center .hd {}
+
+.jjzyx .center .bd ul li {
+    float: left;
+    margin-bottom: 32px;
+}
+
+.jjzyx .center .bd {
+    overflow: hidden;
+    padding-top: 30px;
+}
+
+.jjzyx .center .bd ul li.big {
+    width: 560px;
+    height: 270px;
+    background-color: green;
+    margin-right: 32px;
+}
+
+.jjzyx .center .bd ul li.normal {
+    width: 264px;
+    height: 270px;
+    background-color: rebeccapurple;
+    margin-right: 32px;
+}
+
+.jjzyx .center .bd ul li.more {
+    width: 264px;
+    height: 270px;
+    background-color: rosybrown;
+}
+
+.jjzyx .center .bd ul li:nth-child(3),
+.jjzyx .center .bd ul li:nth-child(7) {
+    margin-right: 0;
+}
