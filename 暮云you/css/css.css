@@ -376,19 +376,35 @@
 
 .jjzyx .center .bd ul li {
     float: left;
-    margin-bottom: 32px;
+    margin-bottom: 30px;
 }
 
 .jjzyx .center .bd {
     overflow: hidden;
-    padding-top: 30px;
+    margin-top: 30px;
 }
 
 .jjzyx .center .bd ul li.big {
     width: 560px;
     height: 270px;
-    background-color: green;
     margin-right: 32px;
+    position: relative;
+}
+
+.jjzyx .center .bd ul li.big .picbox {
+    /* position: relative; */
+    height: 270px;
+}
+
+.jjzyx .center .bd ul li.big .picbox .info {
+    position: absolute;
+    width: 560px;
+    height: 170px;
+    bottom: 0;
+    color: white;
+    line-height: 170px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .jjzyx .center .bd ul li.normal {
@@ -401,10 +417,95 @@
 .jjzyx .center .bd ul li.more {
     width: 264px;
     height: 270px;
-    background-color: rosybrown;
+    background-image: linear-gradient(180deg, #34e3bc, #15af74);
+    padding-top: 46px;
+    box-sizing: border-box;
+}
+
+.jjzyx .center .bd ul li img {
+    width: 100%;
+    height: 100px;
+    /* background-color:  */
+}
+
+.jjzyx .center .bd ul li.more p {
+    text-align: center;
+    color: white;
+    line-height: 24px;
+}
+
+.jjzyx .center .bd ul li.more ul {
+    margin-left: 50px;
+    margin-top: 30px;
+}
+
+.jjzyx .center .bd ul li.more ul li {
+    float: left;
+    color: white;
+    border-right: 1px solid white;
+    padding: 0 4px;
+}
+
+.jjzyx .center .bd ul li:hover {
+    box-shadow: 0px 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .jjzyx .center .bd ul li:nth-child(3),
 .jjzyx .center .bd ul li:nth-child(7) {
     margin-right: 0;
+}
+
+.jjzyx .center .bd {
+    padding-top: 32px;
+}
+
+.jjzyx .center .bd .col {
+    float: left;
+    width: 364px;
+    height: 480px;
+    background-color: violet;
+    margin-right: 30px;
+}
+
+.jjzyx .center .bd .col:last-child {
+    margin-right: 0;
+}
+
+.jjzyx .center .bd .col .big {
+    width: 364px;
+    height: 270px;
+    background-color: tomato;
+    position: relative;
+}
+
+.jjzyx .center .bd .col .big .info {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 100px;
+    background-color: teal;
+    text-align: center;
+    line-height: 100px;
+}
+
+.jjzyx .center .bd .col .grid {
+    background-color: turquoise;
+    width: 100%;
+    height: 120px;
+    margin-bottom: 30px;
+}
+
+.jjzyx .center .bd .col .grid .pic {
+    float: left;
+    width: 120px;
+    height: 120px;
+    background-color: yellow;
+}
+
+.jjzyx .center .bd .col .grid .info {
+    float: left;
+    width: 244px;
+    height: 120px;
+    padding: 26px;
+    box-sizing: border-box;
 }
