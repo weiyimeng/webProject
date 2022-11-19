@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+
+    <div id="box">
+        <p> 我是段落</p>
+        <p id="par"> 我是段落</p>
+        <p> 我是段落</p>
+    </div>
+
+
+    <script>
+        window.onload = function() {
+
+        }
+        var box = document.getElementById("box")
+        var par = document.getElementById("par")
+
+
+        box.onclick = function() {
+            alert("box被点击")
+        }
+        console.log(box.childNodes)
+        console.log(box.firstElementChild)
+
+        var oDiv = document.createElement('p')
+        oDiv.innerText = "我是新来的"
+        box.appendChild(oDiv)
+
+
+        box.insertBefore(oDiv, par)
+    </script>
+</body>
+
+</html>
