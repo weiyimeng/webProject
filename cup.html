@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="js/h1-cmd.js">
+    </script>
+
+    <script type="text/javascript">
+        const RS_SERVICE_UUIE = "15f1e600-a277-43fc-a484-dd39ef8a9100"
+
+        const RS_CH_UUID = "15f1e601-a277-43fc-a484-dd39ef8a9100"
+
+        const SD_SERVICE_UUIE = "15f1e600-a277-43fc-a484-dd39ef8a9100"
+
+        const SD_CH_UUID = "15f1e602-a277-43fc-a484-dd39ef8a9100"
+
+        var current_run_server = null
+
+        var msg_id = 1
+
+        var save_frame = []
+
+        var work_obj = {
+            "idle": 0,
+            "heat": 1,
+            "hold": 2
+        }
+
+        var work_list = ["idle", "heat", "hold"]
+
+
+
+
+
+        const fromHexString = hexString =>
+
+            new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+
+
+        const toHexString = bytes =>
+
+            bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
+
+
+        function stringToUint8Array(str) {
+
+            var arr = [];
+
+            for (var i = 0, j = str.length; i < j; ++i) {
+
+                arr.push(str.charCodeAt(i));
+
+            }
+
+
+
+            var tmpUint8Array = new Uint8Array(arr);
+
+            return tmpUint8Array
+
+        }
+
+
+
+        function Uint8ArrayToString(fileData) {
+
+            var dataString = "";
+
+            for (var i = 0; i < fileData.length; i++) {
+
+                dataString += String.fromCharCode(fileData[i]);
+
+            }
+
+
+
+            return dataString
+
+
+
+        }
+
+        function get_current_msg_id() {
+
+            return msg_id
+
+        }
+
+
+
+        //==================================================================
+
+        //函数名：  getGattProfile
+
+        //作者：    LiuJianhui
+
+        //日期：    2022-07-15
+
+        //功能：    获取蓝牙产品的GATT协议的信息， 包括上行和下行的服务和字符 UUID 信息（Service UUID/Characteristic UUID）, 自定义协议BLE设备采用两个UUID 分别发送下行数据（APP->设备），和接收上行数据（设备->APP）
+
+        //输入参数： 无
+
+        //返回值：  类型string （json结构 转换成string）， json 结构包含果设备的上、下行使用的GATT配置信息，
+
+        //             - sd_serviceUUID：下行GATT协议的服务 UUID
+
+        //             - sd_characteristicUUID：下行GATT协议的字符 UUID
+
+        //             - rs_serviceUUID：上行GATT协议的服务 UUID
+
+        //             - sd_characteristicUUID：上行GATT协议的字符 UUID
+
+        //修改记录：
+
+        //==================================================================
+
+
+
+        function getGattProfile() {
+
+            var obj = {}
+
+            obj["sd_serviceUUID"] = SD_SERVICE_UUIE //app发送
+
+            obj["sd_characteristicUUID"] = SD_CH_UUID
+
+            obj["rs_serviceUUID"] = RS_SERVICE_UUIE //app接收
+
+            obj["rs_characteristicUUID"] = RS_CH_UUID
+
+
+
+            var json = JSON.stringify(obj)
+
+            return json
+
+        }
+
+
+
+        //==================================================================
+
+        //函数名：  modeToRawData
+
+        //作者：    LiuJianhui
+
+        //日期：    2022-07-15
+
+        //功能：    在进行蓝牙设备的操作之前， 调用该函数把物模型数据转换成设备蓝牙协议支持的数据格式
+
+        //输入参数： 类型：string，名称： modeData，  产品的物模型数据，由json转换为string格式， 原json数据格式如下：
+
+        //                - {“identifier”:“flag”}     读取标识为 “flag”的 设备属性值
+
+        //                - {“identifier”:“flag”, “value”:10}  写标识为 “flag”的 设备属性值为 10
+
+        //                - {“identifier”:“powerOn”, “inputData”:[{"identifier":"red", "value":1}, {"identifier":"green", "value":2}]}  操作标识为“powerOn”的服务， 服务的输入参数为red=1, green=2
+
+        //返回值：  类型string （Uint8Array转换成string）， 使用函数toHexString 函数把需要发送的字节码转换成string 类型。
+
+
+
+        //修改记录：
+
+        //==================================================================
+
+
+
+        function modeToRawData(modeData) {
+
+            var controlHex
+
+            var controlString
+
+            var contorolHead = new Uint8Array(7)
+
+            var serviceName = "customSecData"
+
+            var data = JSON.parse(modeData)
+
+            contorolHead[0] = (0b0000 << 4) | (0b01 << 2) | (0b00)
+
+            msg_id = msg_id >= 255 ? 1 : msg_id + 1
+
+            contorolHead[1] = msg_id //message id
+
+            contorolHead[2] = 1 //Total FRAME
+
+            contorolHead[3] = 0
+
+            contorolHead[4] = 0 //Rev
+
+            contorolHead[5] = 0 //no encry
+
+            contorolHead[6] = 0 //return
+
+            var palyloadHead = new Uint8Array(4 + serviceName.length)
+
+            var playloadData
+
+            palyloadHead[0] = 0 //Rev
+
+            palyloadHead[1] = serviceName.length // serviceLength
+
+            var snArry = stringToUint8Array(serviceName)
+            console.log("stringToUint8Array", snArry);
+
+            palyloadHead.set(snArry, 2)
+
+
+
+            switch (data.identifier)
+
+            {
+
+                case "reset":
+
+
+
+                    controlString = JSON.stringify({
+                        "sid": "reset",
+                        "data": {}
+                    })
+
+                    current_run_server = data
+
+                    break
+
+
+
+                case "setState":
+
+                    var setObj = {
+                        "sid": "setState",
+                        "data": {}
+                    }
+
+                    for (var i = 0; i < data.inputData.length; i++) {
+
+                        console.log("data.inputData", data.inputData[i])
+
+                        switch (data.inputData[i].indentifier)
+
+                        {
+
+                            case "work":
+
+                                var work_index = data.inputData[i].value
+
+                                var work_str = work_list[work_index]
+
+                                setObj.data.work = work_str
+
+                                break
+
+                            case "heatTemp":
+
+                                setObj.data.heatTemp = data.inputData[i].value
+
+                            case "holdTemp":
+
+                                setObj.data.holdTemp = data.inputData[i].value
+
+                                break
+
+                            case "security":
+
+                                setObj.data.security = data.inputData[i].value
+
+                                break
+
+                            case "securityHour":
+
+                                setObj.data.securityHour = data.inputData[i].value
+
+                                break
+
+                        }
+
+
+
+                    }
+
+                    var sndObj = {
+                        "vendor": setObj,
+                        "seq": msg_id
+                    }
+
+                    controlString = JSON.stringify(sndObj)
+
+                    current_run_server = data
+
+                    break
+
+
+
+                default:
+                    controlString = JSON.stringify({
+                        "vendor": {
+                            "sid": "getState",
+                            "data": {}
+                        },
+                        "seq": msg_id
+                    })
+                    console.log("getState", controlString)
+
+
+
+
+            }
+
+            playloadData = stringToUint8Array(controlString)
+
+            palyloadHead[2 + serviceName.length] = (playloadData.length) & 0xFF
+
+            palyloadHead[3 + serviceName.length] = ((playloadData.length) & 0xFF00) >> 8
+
+            controlHex = new Uint8Array(contorolHead.length + palyloadHead.length + playloadData.length)
+
+            controlHex.set(contorolHead, 0)
+            console.log("contorolHead===", contorolHead)
+
+            controlHex.set(palyloadHead, contorolHead.length)
+
+            controlHex.set(playloadData, contorolHead.length + palyloadHead.length)
+
+            console.log(controlHex)
+
+            return toHexString(controlHex)
+
+        }
+
+
+
+        //==================================================================
+
+        //函数名：  rowDataToMode
+
+        //作者：    LiuJianhui
+
+        //日期：    2022-07-15
+
+        //功能：    在收到蓝牙设备的数据后， 调用该函数把设备蓝牙协议支持的数据格式转换成物模型数据
+
+        //输入参数： 类型：string，名称： rawData，   使用函数fromHexString 函数把需要收到的字节码转换成string 类型
+
+
+
+        //返回值：  类型string （JSON 转换成string）， JSON 结构如下。
+
+        //   - 读取的属性数据
+
+        //     -- {"type":"properties", data:[{"n":“prop1” "v":1}，{"n":"prop2", "v":1，}]}
+
+        //
+
+        //   - 监听的事件数据
+
+        //     --{"type":"event", data: { “identifier”： “event1”，"outputData":{“output1” :1 ，"output": 1}}
+
+        //
+
+        //   - 服务调用数据
+
+        //     -- {"type":"services ","data":{  “identifier”： “sevice1”，“inputData”:[{"identifier":"red", "value":1}, {"identifier":"green", "value":2}],
+
+        //                                      "output": [{"identifier":"return1", "value":1}, {"identifier":"return2", "value":2}]}
+
+
+
+        //修改记录：
+
+        //==================================================================
+
+
+
+        function rowDataToMode(rawData) {
+
+            var data = fromHexString(rawData)
+
+            //   if (data.length<12 || data[1] != msg_id )
+
+            //      return null
+            console.log("data====", data);
+            var frameNumber = data[2]
+
+            var curtFrame = data[3]
+
+            //    console.log(data)
+
+            var playloadBody
+
+            var playloadBodyStr
+
+
+
+
+
+            if (curtFrame == 0)
+
+            {
+
+                var svcNameLen = data[8]
+
+                var svcNameArr = data.slice(9, svcNameLen + 9)
+
+                var svcNameStr = Uint8ArrayToString(svcNameArr)
+
+                console.log("svcNameArr", svcNameArr)
+
+                playloadBody = data.subarray(11 + svcNameLen)
+
+            } else {
+
+                playloadBody = data.subarray(7)
+
+            }
+
+            playloadBodyStr = Uint8ArrayToString(playloadBody)
+
+            console.log("playloadBodyStr", playloadBodyStr)
+
+            save_frame.push(playloadBodyStr)
+
+            if (curtFrame != frameNumber - 1) {
+
+                return "continue"
+
+            } else {
+
+                var playloadAll = save_frame.join("")
+
+                var playloadObj = JSON.parse(playloadAll)
+
+                console.log("playloadObj", playloadObj)
+
+                save_frame = []
+
+                switch (playloadObj.vendor.sid)
+
+                {
+
+                    case "reset":
+
+                    case "setState":
+
+                        var output = [{
+                            "identifier": "code",
+                            "value": playloadObj.vendor.data.code
+                        }]
+
+
+
+                        if (current_run_server) {
+
+                            current_run_server["output"] = output
+
+                            console.log("create server output data")
+
+                            return JSON.stringify({
+                                "type": "services",
+                                "data": current_run_server
+                            })
+
+                        } else
+
+                            return null
+
+
+
+                    case "getState":
+
+                        var data = playloadObj.vendor.data
+
+                        var num_wk = work_obj[data.work]
+
+                        var arr = [{
+                                "n": "work",
+                                "v": num_wk
+                            }, {
+                                "n": "curTemp",
+                                "v": data.curTemp
+                            },
+
+                            {
+                                "n": "heatTemp",
+                                "v": data.heatTemp
+                            }, {
+                                "n": "holdTemp",
+                                "v": data.holdTemp
+                            },
+
+                            {
+                                "n": "security",
+                                "v": data.security
+                            }, {
+                                "n": "securityHour",
+                                "v": data.securityHour
+                            }, {
+                                "n": "empty",
+                                "v": data.empty
+                            }
+                        ]
+
+
+
+                        return JSON.stringify({
+                            "type": "properties",
+                            "data": arr
+                        })
+
+
+
+                    default:
+
+                        return null
+
+                }
+
+            }
+
+        }
+    </script>
+
+    <style>
+        .modeToRawData {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .parseMessage {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <div class="modeToRawData" id="modeToRawData">modeToRawData</div>
+
+    <div class="parseMessage" id="parseMessage">parseMessage</div>
+    <script>
+        var ss = document.getElementById("modeToRawData");
+        ss.onclick = function(e) {
+            console.log(3333333333333);
+            console.log(modeToRawData("{\"identifier\":\"work\"}"));
+        }
+
+        document.getElementById("parseMessage").onclick = function(e) {
+            // var fun = parseMessage;
+            var value = "01 00 02 00 00 00 00 11 0d 63 75 73 74 6f 6d 53 65 63 44 61 74 61 96 00 7b 22 76 65 6e 64 6f 72 22 3a 7b 22 73 69 64 22 3a 22 67 65 74 53 74 61 74 65 22 2c 22 64 61 74 61 22 3a 7b 22 63 6f 64 65 22 3a 30 2c 22 77 6f 72 6b 22 3a 22 68 65 61 74 22 2c 22 63 75 72 54 65 6d 70 22 3a 35 36 2c 22 68 65 61 74 54 65 6d 70 22 3a 36 30 2c 22 68 6f 6c 64 54 65 6d 70 22 3a 36 30 2c 22 73 65 63 75 72 69 74 79 22 3a 31 2c 22 65 6d 70 74 79 22 3a 30 2c 22 73 65 63 75 72 69 74 79 48 6f 75 72".replace(/\s*/g, "");
+            // console.log(value);
+            // rowDataToMode(value);
+
+            var value1 = "01 00 02 00 00 00 00 11 0d 63 75 73 74 6f 6d 53 65 63 44 61 74 61 98 00 7b 22 76 65 6e 64 6f 72 22 3a 7b 22 73 69 64 22 3a 22 67 65 74 53 74 61 74 65 22 2c 22 64 61 74 61 22 3a 7b 22 63 6f 64 65 22 3a 30 2c 22 77 6f 72 6b 22 3a 22 68 6f 6c 64 22 2c 22 63 75 72 54 65 6d 70 22 3a 35 36 2c 22 68 65 61 74 54 65 6d 70 22 3a 35 30 2c 22 68 6f 6c 64 54 65 6d 70 22 3a 35 30 2c 22 73 65 63 75 72 69 74 79 22 3a 31 2c 22 65 6d 70 74 79 22 3a 30 2c 22 73 65 63 75 72 69 74 79 48 6f 75 72".replace(/\s*/g, "");;
+            rowDataToMode(value1);
+
+        }
+    </script>
+
+
+</body>
+
+</html>

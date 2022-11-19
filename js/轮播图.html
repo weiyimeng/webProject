@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .carousel {
+            width: 400px;
+            height: 200px;
+            border: 1px solid black;
+            margin: auto auto;
+            margin-top: 200px;
+            position: relative;
+            /* overflow: hidden; */
+        }
+        
+        .carousel ul {
+            width: 10000px;
+            list-style: none;
+            left: -400px;
+            position: relative;
+            transition: left 0.5s linear;
+        }
+        
+        .carousel ul li {
+            float: left;
+        }
+        
+        .carousel ul li img {
+            background-color: aqua;
+            width: 400px;
+            height: 200px;
+        }
+        
+        .carousel ul li .img2 {
+            background-color: bisque;
+        }
+        
+        .carousel ul li .img3 {
+            background-color: royalblue;
+        }
+        
+        .carousel .leftBtn {
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            position: absolute;
+            top: 50%;
+            margin-top: -25px;
+            border-radius: 50%;
+            left: 10px;
+        }
+        
+        .carousel .rightBtn {
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            position: absolute;
+            top: 50%;
+            margin-top: -25px;
+            border-radius: 50%;
+            right: 10px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="carousel">
+
+        <ul id="list">
+
+            <li><img src="" class="img1" alt=""></li>
+            <li><img src="" class="img2" alt=""></li>
+            <li><img src="" class="img3" alt=""></li>
+            <li><img src="" alt=""></li>
+        </ul>
+
+        <a href="javascript:;" class="leftBtn" id="leftBtn"></a>
+        <a href="javascript:;" class="rightBtn" id="rightBtn"></a>
+    </div>
+
+
+    <script>
+        // document.documentElement.clientHeight
+        var left = 0
+        var leftBtn = document.getElementById("leftBtn")
+        var rightBtn = document.getElementById("rightBtn")
+        var list = document.getElementById("list")
+        leftBtn.onclick = function() {
+            left++
+            list.style.left = left * 400 + "px"
+        }
+        rightBtn.onclick = function() {
+            left--
+            list.style.left = left * 400 + "px"
+        }
+    </script>
+</body>
+
+</html>
