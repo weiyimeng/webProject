@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <button id="cn">中文</button>
+    <button id="en">英文</button>
+
+    <script type="module">
+      import { set, get } from "./cookie.js";
+      set("user", "2");
+      set("11", "2");
+      set("111", "2");
+      set("1111", "2", {
+        maxAge: 1000,
+      });
+      console.log(get("user"));
+
+      // set("", "");
+
+      document.getElementById("cn").addEventListener(
+        "click",
+        () => {
+          set("language", "cn");
+
+          document.location = "./cookie.html";
+        },
+        false
+      );
+
+
+
+      document.getElementById("en").addEventListener(
+        "click",
+        () => {
+          set("language", "en");
+          document.location = "./cookie.html";
+        },
+        false
+      );
+    </script>
+
+    <div>Cookie的封装</div>
+  </body>
+</html>

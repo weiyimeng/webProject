@@ -1,112 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
-
     <style>
-        .box {
-            background-color: #222;
-            height: 100px;
-            margin-top: 10px;
-            width: 100px;
-        }
+      .box {
+        background-color: #222;
+        height: 100px;
+        margin-top: 10px;
+        width: 100px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="box1" class="box"></div>
     <div id="box2" class="box"></div>
     <script>
-        function sds(view, {
-            x = 0,
-            y = 0
-        }, end = () => void {}) {
-            end();
+      function sds(view, { x = 0, y = 0 }, end = () => void {}) {
+        end();
+      }
+      var box1 = document.getElementById("box1");
+      console.log(box1);
+      box1.addEventListener(
+        "click",
+        (ele, event) => {
+          pro()
+            .then(
+              (success) => {
+                console.log("success=====111================");
+              },
+              (error) => {
+                console.log("error=======111==============");
+              }
+            )
+            .catch((error) => {
+              console.log("catch=======111==============");
+            })
+            .then(
+              (success) => {
+                console.log("success=====222================");
+              },
+              (error) => {
+                console.log("error========222=============");
+              }
+            );
+        },
+        false
+      );
+      const pro = () => {
+        return new Promise((resol, reject) => {
+          sds(box1, (1, 2), () => {
+            console.log("sdsds====");
+            resol();
+          });
+        });
+      };
+      // console.log(pro);
+      // pro.then(success => {
+      //     console.log("success=====111================")
+
+      // }, error => {
+      //     console.log("error=====================")
+      // })
+
+      Promise.resolve();
+
+      const p1 = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("我执行了");
+        }, 1000);
+      }).then((success) => {
+        console.log(`===11==${success}`);
+        return "sssss";
+      });
+
+      Promise.resolve(p1).then((success) => {
+        console.log("=====", success);
+      });
+
+      const peroson = {
+        ten(a, b) {
+          console.log("person====");
+          a("hhhhhhhhhhhhhh");
+        },
+        say: () => {
+          console.log("say============");
+        },
+      };
+      // peroson.then();
+      // peroson.say();
+
+      Promise.resolve(peroson).then(
+        (success) => {
+          console.log("!===" + success);
+        },
+        (error) => {
+          console.log("ddd");
         }
-        var box1 = document.getElementById("box1");
-        console.log(box1);
-        box1.addEventListener("click", (ele, event) => {
-            pro().then(success => {
-                console.log("success=====111================")
+      );
+      const p3 = Promise.resolve("22");
+      const p4 = Promise.resolve("33");
 
-            }, error => {
-                console.log("error=======111==============")
-            }).catch(error => {
-                console.log("catch=======111==============")
+      console.log(Promise.resolve(peroson));
+      Promise.all([p3, p4]).then((success) => {
+        console.log(success);
+      });
 
-            }).then(success => {
-                console.log("success=====222================")
-
-            }, error => {
-                console.log("error========222=============")
-
-            });
-        }, false)
-        const pro = () => {
-                return new Promise((resol, reject) => {
-                    sds(box1, (1, 2), () => {
-                        console.log("sdsds====");
-                        reject();
-                    })
-                });
-            }
-            // console.log(pro);
-            // pro.then(success => {
-            //     console.log("success=====111================")
-
-        // }, error => {
-        //     console.log("error=====================")
-        // })
-
-        Promise.resolve()
-
-        const p1 = new Promise(resolve => {
-            setTimeout(() => {
-                resolve("我执行了");
-            }, 1000)
-        }).then(success => {
-            console.log(success);
-            return "sssss";
-        })
-
-        Promise.resolve(p1).then(success => {
-            console.log("=====", success);
-        })
-
-        const peroson = {
-                then(a, b) {
-                    console.log("person====");
-                    a("hhhhhhhhhhhhhh");
-                },
-                say: () => {
-                    console.log("say============")
-                }
-            }
-            // peroson.then();
-            // peroson.say();
-
-        Promise.resolve(peroson).then(success => {
-            console.log(success)
-        }, error => {
-            console.log("ddd")
-
-        })
-        const p3 = Promise.resolve("22");
-        const p4 = Promise.resolve("33");
-
-        console.log(Promise.resolve(peroson))
-        Promise.all([p3, p4]).then(
-            success => {
-
-                console.log(success)
-            }
-        )
+      function greet() {
+        var promise = new Promise(function (resolve, reject) {
+          var greet = "hello world";
+          resolve(greet);
+        });
+        return promise;
+      }
+      var p = greet().then((v) => {
+        console.log(v); // Promise { <pending> }
+      });
+      console.log(p); // hello world
     </script>
-</body>
-
+  </body>
 </html>

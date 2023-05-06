@@ -1,2 +1,6 @@
 {
+    "prettier.bracketSameLine": true,
+    "prettier.proseWrap": "preserve",
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "aiXcoder.showTrayIcon": true
 }

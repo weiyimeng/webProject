@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../../暮云you/css/reset.css" />
+  </head>
+  <body>
+    <form id="login" action="https://www.imooc.com/" method="post">
+        <div>
+            <input type="text" title="name" name="username" />
+        </div>
+    <div>
+      <input type="password" name="password" />
+        
+    </div>
+      <input type="submit" id="btn" value="登录" />
+      <div></div>
+    </form>
+
+    <script>
+      localStorage.setItem("name", "zhangsan");
+
+      const loginForm = document.getElementById("login");
+      const subBtn = document.getElementById("btn");
+
+      const name = localStorage.getItem("userName");
+      if (name) {
+        loginForm.username.value = name;
+      }
+
+      subBtn.addEventListener(
+        "click",
+        (e) => {
+          e.preventDefault();
+
+          localStorage.setItem("userName", loginForm.username.value);
+          console.log(loginForm.username.value);
+
+          loginForm.submit();
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
